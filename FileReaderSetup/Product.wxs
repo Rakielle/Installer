@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi"><?define File-Reader_TargetDir=$(var.File-Reader.TargetDir)?>
+	<Product Id="3B7DAC50-DC1C-4E3D-9679-D17725FB1A99" Name="File Reader" Language="1033" Version="1.0.0.0" Manufacturer="Rakielle" UpgradeCode="25e69837-5ef7-4384-9ac5-1c394357e474">
+		
+		<Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
+
+		<Icon Id="icon.ico" SourceFile="$(var.ProjectDir)images\icon.ico" />
+
+		<Property Id="ARPPRODUCTICON" Value="icon.ico" />
+
+		<WixVariable Id="WixUIBannerBmp" Value="images\installer_top-banner.bmp" />
+		<WixVariable Id="WixUIDialogBmp" Value="images\installer_background.bmp" />
+		<WixVariable Id="WixUILicenseRtf" Value="$(var.ProjectDir)\license.rtf" />
+
+		<Property Id="WIXUI_INSTALLDIR" Value="INSTALLFOLDER" />
+		<UIRef Id="WixUI_InstallDir" />
+
+		<MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
+		<MediaTemplate EmbedCab="yes" />
+
+		<Feature Id="ProductFeature" Title="FileReaderSetup" Level="1">
+			<ComponentGroupRef Id="ProductComponents" />
+			<ComponentRef Id="ApplicationShortcut" />
+			<ComponentRef Id="ApplicationShortcutDesktop" />
+		</Feature>
+		
+	</Product>
+
+	<Fragment>
+		<Directory Id="TARGETDIR" Name="SourceDir">
+			<Directory Id="ProgramFilesFolder">
+				<Directory Id="INSTALLFOLDER" Name="File Reader" />
+			</Directory>
+			<Directory Id="ProgramMenuFolder">
+				<Directory Id="ApplicationProgramsFolder" Name="File Reader" />
+			</Directory>
+			<Directory Id="DesktopFolder" Name="Desktop" />
+		</Directory>
+	</Fragment>
+
+	<Fragment>
+		<DirectoryRef Id="ApplicationProgramsFolder">
+			<Component Id="ApplicationShortcut" Guid="E3105564-F358-436F-9A30-1FC3890D9506">
+				<Shortcut Id="ApplicationStartMenuShortcut" Name="File Reader" Description="File Reader" Target="[INSTALLFOLDER]File-Reader.exe" WorkingDirectory="INSTALLFOLDER" />
+				<RemoveFolder Id="RemoveApplicationProgramsFolder" Directory="ApplicationProgramsFolder" On="uninstall" />
+				<RegistryValue Root="HKCU" Key="Software\FileReader" Name="installed" Type="integer" Value="1" KeyPath="yes" />
+			</Component>
+		</DirectoryRef>
+
+		<DirectoryRef Id="DesktopFolder">
+			<Component Id="ApplicationShortcutDesktop" Guid="9A9031DE-0C56-47B3-86F2-12371B0DB848">
+				<Shortcut Id="ApplicationDesktopShortcut" Name="File Reader" Description="File Reader" Target="[INSTALLFOLDER]File-Reader.exe" WorkingDirectory="INSTALLFOLDER" />
+				<RemoveFolder Id="RemoveDesktopFolder" Directory="DesktopFolder" On="uninstall" />
+				<RegistryValue Root="HKCU" Key="Software\FileReader" Name="installed" Type="integer" Value="1" KeyPath="yes" />
+			</Component>
+		</DirectoryRef>
+	</Fragment>
+
+
+	<Fragment>
+		<ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
+			<!-- TODO: Remove the comments around this Component element and the ComponentRef below in order to add resources to this installer. -->
+			<!-- <Component Id="ProductComponent"> -->
+				<!-- TODO: Insert files, registry keys, and other resources here. -->
+			<!-- </Component> -->
+			<Component Id="File_Reader.exe" Guid="9072EDE1-EBA2-44AB-AD4B-2E1B37793FFF">
+			  <File Id="File_Reader.exe" Name="File-Reader.exe" Source="$(var.File-Reader_TargetDir)File-Reader.exe" />
+
+				<ProgId Id="AcmeFoobar.pdffile" Description="File Reader PDF Document">
+					<Extension Id="pdf" ContentType="application/pdf">
+						<Verb Id="open" Command="Open" TargetFile="File_Reader.exe" Argument="'%1'" />
+					</Extension>
+				</ProgId>
+
+				<ProgId Id="AcmeFoobar.xyzfile" Description="File Reader XYZ Document">
+					<Extension Id="xyz" ContentType="application/xyz">
+						<Verb Id="open" Command="Open" TargetFile="File_Reader.exe" Argument="'%1'" />
+					</Extension>
+				</ProgId>
+
+				<ProgId Id="AcmeFoobar.odtfile" Description="File Reader ODT Document">
+					<Extension Id="odt" ContentType="application/odt">
+						<Verb Id="open" Command="Open" TargetFile="File_Reader.exe" Argument="'%1'" />
+					</Extension>
+				</ProgId>
+
+				<ProgId Id="AcmeFoobar.odsfile" Description="File Reader ODS Document">
+					<Extension Id="ods" ContentType="application/xyz">
+						<Verb Id="open" Command="Open" TargetFile="File_Reader.exe" Argument="'%1'" />
+					</Extension>
+				</ProgId>
+			</Component>
+			
+			<Component Id="File_Reader.exe.config" Guid="F5569B79-B613-433E-8EC1-1FA17B2C441B">
+			  <File Id="File_Reader.exe.config" Name="File-Reader.exe.config" Source="$(var.File-Reader_TargetDir)File-Reader.exe.config" />
+			</Component>
+
+			<Component Id="icon.ico" Guid="B4ECA87E-5843-44AF-B85A-F81BC8BBD7E5">
+				<File Id="icon.ico" Name="icon.ico" Source="$(var.ProjectDir)images\icon.ico" />
+			</Component>
+		</ComponentGroup>
+	</Fragment>
+</Wix>
